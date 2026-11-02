@@ -3,3 +3,4 @@
 ## Non publié
 
 - Version initiale de l'API tasks-api.
+- Ajout par le développeur B : ajout d un filtre par date.
