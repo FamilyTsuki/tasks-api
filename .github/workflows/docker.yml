@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - tp3
     tags:
       - "v*"
   workflow_dispatch:
@@ -75,3 +74,72 @@ jobs:
           build-args: |
             APP_VERSION=${{ steps.app-version.outputs.version }}
 
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Connexion à GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Démarrer le conteneur en staging
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/tasks-api:sha-${GITHUB_SHA::7}"
+          docker run -d --name tasks-api-staging -p 8000:8000 "${IMAGE}"
+
+      - name: Test de fumée (smoke test)
+        run: |
+          for i in {1..10}; do
+            if curl -sf http://localhost:8000/health; then
+              echo "Le service répond sur /health !"
+              break
+            fi
+            echo "En attente du démarrage..."
+            sleep 2
+          done
+          curl -sf http://localhost:8000/health
+          curl -sf http://localhost:8000/version
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Connexion à GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Démarrer le conteneur en production
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          VERSION="${GITHUB_REF_NAME#v}"
+          IMAGE="ghcr.io/${OWNER}/tasks-api:${VERSION}"
+          docker run -d --name tasks-api-prod -p 8000:8000 "${IMAGE}"
+
+      - name: Test de fumée (smoke test)
+        run: |
+          for i in {1..10}; do
+            if curl -sf http://localhost:8000/health; then
+              echo "Le service répond sur /health !"
+              break
+            fi
+            echo "En attente du démarrage..."
+            sleep 2
+          done
+          curl -sf http://localhost:8000/health
+          curl -sf http://localhost:8000/version
