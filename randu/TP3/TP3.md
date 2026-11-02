@@ -4,11 +4,6 @@ le .dockerignore sert a pas copier dans l'image les fichiers inutiles (.git, .ve
 
 Q2 accelerer la chose et pouvoir avoir la meme a chaque foi
 
-## Q3 (Partie 3 : Publier l'image depuis le pipeline)
+Q3 pour pas construire et publier une image avec du code casse, si les tests ratent ca s'arrete avant le build
 
-- **Pourquoi `build` attend-il `test` ?**  
-  Pour garantir qu'on ne construit et qu'on ne publie jamais une image Docker avec du code cassé ou non validé. Si les tests échouent, le pipeline s'arrête avant de gaspiller des ressources de build et d'exposer une version défaillante sur le registre.
-
-- **Pourquoi éviter le tag `latest` en production ?**  
-  Le tag `latest` est mutable (sa cible change à chaque nouveau push). Cela rend les déploiements non reproductibles : on ne sait pas quelle version exacte tourne en production et il est difficile de faire un rollback en cas de problème. Il faut toujours privilégier des tags immuables et traçables comme le hash de commit (`sha-...`) ou un tag sémantique (`0.1.0`).
-
+latest change a chaque push donc on sait jamais quelle version tourne vraiment en prod et c'est dur de revenir en arriere, avec un tag fixe (0.1.0 ou le sha) on sait exactement ce qui tourne
