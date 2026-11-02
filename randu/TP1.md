@@ -8,3 +8,6 @@
 > **Étape en échec :** `Run pytest` — `tests/test_logic.py` ligne 13 et `tests/test_api.py` ligne 29 (`MAX_TITLE_LENGTH = 2`).
 > **Trouvé grâce à :** le `short test summary info` en bas des logs.
 
+## Q3
+
+> pour eviter de push des erreur sur la main
