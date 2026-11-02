@@ -11,3 +11,9 @@ un fichier produit par le run (ici coverage.xml) qu'on peut telecharger depuis l
 parce que les deux branches ont modifie la meme ligne du CHANGELOG et git sait pas laquelle garder ou s'il faut garder les deux, c'est a nous de choisir
 
 la CI (le workflow CI) qui s'est relancee sur la PR apres le commit de resolution et a refait passer lint + tests
+
+pour que personne puisse le lire dans les logs, les logs sont visibles par tous ceux qui ont acces au depot (ici il est public) donc le secret serait expose
+
+il est dans l'historique git pour toujours meme si on le supprime apres, tout le monde peut le recuperer donc faut le considerer comme fuite et le changer direct
+
+secret si c'est sensible (token, mot de passe, cle api), variable si c'est pas grave que ce soit visible (nom d'environnement, url, config)
