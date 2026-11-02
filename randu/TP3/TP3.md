@@ -7,3 +7,5 @@ Q2 accelerer la chose et pouvoir avoir la meme a chaque foi
 Q3 pour pas construire et publier une image avec du code casse, si les tests ratent ca s'arrete avant le build
 
 latest change a chaque push donc on sait jamais quelle version tourne vraiment en prod et c'est dur de revenir en arriere, avec un tag fixe (0.1.0 ou le sha) on sait exactement ce qui tourne
+
+Q4 l'image c'est toujours la meme partout (ma machine, la ci, la prod) avec les memes dependances, alors que le code de ma machine depend de ce que j'ai installe, avec une version on sait exactement ce qui tourne et on peut revenir a une ancienne facilement
