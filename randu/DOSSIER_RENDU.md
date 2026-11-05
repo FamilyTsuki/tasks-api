@@ -194,8 +194,9 @@ Dans ce dernier TP on a mis en place du vrai GitOps avec un cluster Kubernetes l
 * **TP4-5 :** Le commit passant à `replicas: 3` dans `tasks-config` et les 3 pods visibles dans Argo CD.  
   ![TP4-5](TP4/TP4-5.png)
 
-* **TP4-6 :** La commande `kubectl scale` à 5 pods et Argo CD qui supprime direct les pods en trop (`selfHeal`).  
-  ![TP4-6](TP4/TP4-6.png)
+* **TP4-6 :** La commande `kubectl scale` à 5 pods (capture 1) puis la correction automatique d'Argo CD (`selfHeal`) qui supprime direct les pods en trop pour revenir à 3 (capture 2).  
+  ![TP4-6-1](TP4/TP4-6-1.png)  
+  ![TP4-6-2](TP4/TP4-6-2.png)
 
 * **TP4-7 :** L'historique Git avec le `revert` dans `tasks-config` et le retour automatique à 2 pods.  
   ![TP4-7-1](TP4/TP4-7-1.png)  
@@ -234,8 +235,12 @@ Dans ce dernier TP on a mis en place du vrai GitOps avec un cluster Kubernetes l
 ### Difficultés rencontrées
 Pour le test du `selfHeal`, Argo CD a corrigé la dérive tellement vite (moins d'une seconde) que la première fois les pods étaient déjà supprimés quand j'ai lancé `kubectl get pods`. Il a fallu lancer la commande avec `-w` dans un premier terminal avant de faire le `kubectl scale` dans un second terminal pour bien capturer l'événement en direct.
 
+Aussi, lors de la création du token pour le workflow GitHub Actions vers `tasks-config`, j'ai cherché les permissions dans les mauvais menus GitHub (recherche vide sur "Read" au mauvais endroit). Il fallait bien activer les permissions en écriture sur le contenu du dépôt (`Contents: Read and write`) pour que le job `update-config` puisse commiter automatiquement.  
+![TP4-diff-token](TP4/TP4-diff-token.png)
+
 ---
 
 # Bilan personnel
 
 Ce cours m'a permis de comprendre concrètement tout le cycle d'un projet moderne, de l'écriture du code jusqu'au cluster de production. Ce que j'ai surtout retenu, c'est la puissance de GitHub Actions pour automatiser les tests et la sécurité des images, et le principe du GitOps avec Argo CD où Git devient la seule source de vérité pour le déploiement. Ce qui m'a posé le plus de problèmes au début, c'était la gestion fine des permissions (jetons PAT, droits de workflow) et les pièges bêtes comme l'indentation YAML ou les formats de tags. Si c'était à refaire, je ferais plus attention à bien isoler mes branches de test dès le départ et je penserais à lancer mes surveillances terminal (`-w`) avant d'exécuter des modifications sur Kubernetes.
+
